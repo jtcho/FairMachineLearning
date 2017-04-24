@@ -1,0 +1,97 @@
+%
+% File acl2015.tex
+%
+% Contact: car@ir.hit.edu.cn, gdzhou@suda.edu.cn
+%%
+%% Based on the style files for ACL-2014, which were, in turn,
+%% Based on the style files for ACL-2013, which were, in turn,
+%% Based on the style files for ACL-2012, which were, in turn,
+%% based on the style files for ACL-2011, which were, in turn, 
+%% based on the style files for ACL-2010, which were, in turn, 
+%% based on the style files for ACL-IJCNLP-2009, which were, in turn,
+%% based on the style files for EACL-2009 and IJCNLP-2008...
+
+%% Based on the style files for EACL 2006 by 
+%%e.agirre@ehu.es or Sergi.Balari@uab.es
+%% and that of ACL 08 by Joakim Nivre and Noah Smith
+
+\documentclass[11pt]{article}
+\usepackage{acl2015}
+\usepackage{times}
+\usepackage{url}
+\usepackage{latexsym}
+\usepackage{hyperref}
+\usepackage{tikz}
+\usepackage{amsmath}
+
+\usepackage[labelsep=quad,indention=10pt]{subfig}
+\captionsetup*[subfigure]{position=bottom}
+
+\newcommand{\specialcell}[2][c]{%
+  \begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+\usepackage{graphicx}
+\graphicspath{{figures/}}
+\DeclareGraphicsExtensions{.eps,.pdf,.jpg,.png}
+
+\DeclareMathOperator{\wsim}{sim}
+
+%\setlength\titlebox{5cm}
+
+% You can expand the titlebox if you need extra space
+% to show all the authors. Please do not make the titlebox
+% smaller than 5cm (the original size); we will check this
+% in the camera-ready version and ask you to change it back.
+
+\title{Title}
+
+\author{J.T. Cho \\
+	{\tt joncho@} \\
+	{\tt seas.upenn.edu} \\\And
+	Karinna Loo \\
+	{\tt kloo@} \\
+	{\tt seas.upenn.edu} \\\And
+  	Veronica Wharton \\
+  	{\tt whartonv@} \\
+	{\tt seas.upenn.edu} }
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+\noindent TODO: Abstract 
+
+\end{abstract}
+
+\section{Introduction}
+
+\noindent TODO: Problem overview
+
+\noindent TODO: Potential applications
+
+\noindent TODO: Literature review, including overview of \newcite{DBLP:journals/corr/JosephKMNR16}
+
+\section{Project overview}
+
+\noindent TODO: Describe the components of our project. Note the novel contributions of our project.
+
+\section{Implementation: IntervalChaining}
+
+\section{Implementation: RidgeFair}
+
+\section{Experimental results: generated data}
+
+\noindent TODO: Pretty figures
+
+\section{Experimental results: real data}
+
+\noindent TODO: Pretty figures
+
+\section{Conclusion}
+
+\bibliography{paper}
+\bibliographystyle{acl}
+
+\end{document}
