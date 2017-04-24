@@ -24,7 +24,7 @@ $ pip3 install --user virtualenv
 Create the following alias in your `~/.bash_profile`:
 
 ```
-echo "alias virtualenv3='~/Library/Python/3.x/bin/virtualenv'" >> ~/.bash_profile
+$ echo "alias virtualenv3='~/Library/Python/3.x/bin/virtualenv'" >> ~/.bash_profile
 ```
 
 Create a local virtualenv and activate it:
@@ -43,7 +43,7 @@ $ pip install -r requirements.txt
 Create a Python kernel for Jupyter that uses your virtualenv:
 
 ```
-python -m ipykernel install --user --name=fairml
+$ python -m ipykernel install --user --name=fairml
 ```
 
 You can then launch Jupyter using `jupyter notebook` from inside the project directory and change the kernel to `fairml`.
