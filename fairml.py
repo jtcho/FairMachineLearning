@@ -116,7 +116,7 @@ def compute_chain(i_st, intervals, k, _print_progress=True):
 
 def interval_chaining(X, Y, c, k, d, _delta, T, _print_progress=True):
     """
-    Simulates T rounds of interval chaining.
+    Simulates T rounds of TopInterval for k.
 
     :param X: a 3-axis (T, k, d) ndarray of d-dimensional context vectors for
               each time-step and arm
@@ -135,7 +135,7 @@ def interval_chaining(X, Y, c, k, d, _delta, T, _print_progress=True):
     picks = []
     for t in range(T):
         print_progress('Iteration [{0} / {1}]'.format(t, T), pp)
-        if np.random.rand() <= _eta[t]:
+        if t <= d or np.random.rand() <= _eta[t]:
             # Play uniformly at random from [1, k].
             picks.append(np.random.randint(0, k))
             print_progress('Exploration round.', pp)
@@ -143,36 +143,35 @@ def interval_chaining(X, Y, c, k, d, _delta, T, _print_progress=True):
             intervals = []
             for i in range(k):
                 # Compute beta hat.
-                _Xti = X[i][:t+1]
+                _Xti = X[:t+1, i]
                 _XtiT = transpose(_Xti)
                 try:
                     _XTX = inv(_XtiT.dot(_Xti))
-                    _Yti = Y[i][:t+1]
-                    Bh_t_i = _XTX.dot(_XtiT).dot(_Yti)  # Compute OLS estimators.
-                    yh_t_i = Bh_t_i.dot(X[i][t])
-                    _s2 = np.var(Y[i][:t+1])
-                    w_t_i = norm.ppf(
-                            1 - _delta/(2*T*k),
-                            loc=0,
-                            scale=np.sqrt(_s2 * X[i][t].dot(_XTX).dot(transpose(X[i][t])))
-                    )
-                    intervals.append([yh_t_i - w_t_i, yh_t_i + w_t_i])
                 except:
-                    print_progress('Encountered singular matrix. Defaulting to exploration round.', pp)
-                    intervals = None
-                    break
-            # Pick a random uniformly at random from the chain containing the highest quality individual.
+                    print_progress('Encountered singular matrix. Ignoring.', pp)
+                    continue
+                _Yti = Y[:t+1, i]
+                Bh_t_i = _XTX.dot(_XtiT).dot(_Yti)  # Compute OLS estimators.
+                yh_t_i = Bh_t_i.dot(X[t, i])
+                _s2 = np.var(Y[:t+1, i])
+                # Compute the confidence interval width using the inverse CDF.
+                w_t_i = norm.ppf(1 - _delta/(2*T*k), loc=0,
+                                 scale=np.sqrt(_s2 * X[t, i].dot(_XTX).dot(transpose(X[t, i]))))
+                intervals.append([yh_t_i - w_t_i, yh_t_i + w_t_i])
+            # Pick the agent with the largest upper bound.
             if not intervals:
                 picks.append(np.random.randint(0, k))
             else:
                 i_st = np.argmax(np.array(intervals)[:, 1])
+
+                # Chaining
                 chain = compute_chain(i_st, np.array(intervals), k, pp)
                 print_progress('Computed chain: {0}'.format(chain), pp)
                 picks.append(np.random.choice(chain))
             print_progress('Intervals: {0}'.format(intervals), pp)
     # Compute sum of best picks over each iteration.
-    best = [transpose(Y)[i].max() for i in range(2, T)]
-    performance = [Y[picks[t-2]][t] for t in range(2, T)]
+    best = [Y[i].max() for i in range(2, T)]
+    performance = [Y[t][picks[t-2]] for t in range(2, T)]
     cum_regret = sum(best) - sum(performance)
     avg_regret = cum_regret / float(T)
     final_regret = best[-1] - performance[-1]
