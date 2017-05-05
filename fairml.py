@@ -48,7 +48,9 @@ def top_interval(X, Y, k, d, _delta, T, _print_progress=True):
     :param d: the number of features
     :param _delta: confidence parameter
     :param T: the number of iterations
-    :returns: cum_regret (the total regret across all runs of the algorithm),
+    :param _print_progress: True if progress should be printed; False otherwise
+    :returns: cum_regret (the total regret across all T runs of the algorithm),
+              avg_regret (the regret averaged across all T runs of the algorithm),
               final_regret (the regret in the last round of the algorithm)
     """
     pp = _print_progress
@@ -86,10 +88,12 @@ def top_interval(X, Y, k, d, _delta, T, _print_progress=True):
     best = [Y[i].max() for i in range(2, T)]
     performance = [Y[t][picks[t-2]] for t in range(2, T)]
     cum_regret = sum(best) - sum(performance)
+    avg_regret = cum_regret / float(T)
     final_regret = best[-1] - performance[-1]
     print_progress('Cumulative Regret: {0}'.format(cum_regret), pp)
+    print_progress('Average Regret: {0}'.format(avg_regret), pp)
     print_progress('Final Regret: {0}'.format(final_regret), pp)
-    return cum_regret, final_regret
+    return cum_regret, avg_regret, final_regret
 
 
 def compute_chain(i_st, intervals, k, _print_progress=True):
@@ -113,6 +117,18 @@ def compute_chain(i_st, intervals, k, _print_progress=True):
 def interval_chaining(c, k, d, _delta, T, _print_progress=True):
     """
     Simulates T rounds of interval chaining.
+
+    :param X: a 3-axis (T, k, d) ndarray of d-dimensional context vectors for
+              each time-step and arm
+    :param Y: a T x k ndarray of reward function output for each context vector
+    :param k: the number of arms
+    :param d: the number of features
+    :param _delta: confidence parameter
+    :param T: the number of iterations
+    :param _print_progress: True if progress should be printed; False otherwise
+    :returns: cum_regret (the total regret across all T runs of the algorithm),
+              avg_regret (the regret averaged across all T runs of the algorithm),
+              final_regret (the regret in the last round of the algorithm)
     """
     pp = _print_progress
     X = np.random.uniform(0, 1, size=(k, T, d))  # 3-axis ndarray
@@ -161,8 +177,9 @@ def interval_chaining(c, k, d, _delta, T, _print_progress=True):
     best = [transpose(Y)[i].max() for i in range(2, T)]
     performance = [Y[picks[t-2]][t] for t in range(2, T)]
     cum_regret = sum(best) - sum(performance)
+    avg_regret = cum_regret / float(T)
     final_regret = best[-1] - performance[-1]
     print_progress('Cumulative Regret: {0}'.format(cum_regret), pp)
+    print_progress('Average Regret: {0}'.format(avg_regret), pp)
     print_progress('Final Regret: {0}'.format(final_regret), pp)
-    return cum_regret, final_regret
-
+    return cum_regret, avg_regret, final_regret
