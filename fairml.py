@@ -114,7 +114,7 @@ def compute_chain(i_st, intervals, k, _print_progress=True):
     return chain
 
 
-def interval_chaining(c, k, d, _delta, T, _print_progress=True):
+def interval_chaining(X, Y, c, k, d, _delta, T, _print_progress=True):
     """
     Simulates T rounds of interval chaining.
 
@@ -131,10 +131,7 @@ def interval_chaining(c, k, d, _delta, T, _print_progress=True):
               final_regret (the regret in the last round of the algorithm)
     """
     pp = _print_progress
-    X = np.random.uniform(0, 1, size=(k, T, d))  # 3-axis ndarray
     _eta = eta(T)  # exploration cutoff probabilities
-    B = beta(k, d, c)  # true parameters. B[i]: params for arm i
-    Y = np.array([X[i].dot(transpose(B[i])) for i in range(k)])  # not sure if there's a cleaner way to do this
     picks = []
     for t in range(T):
         print_progress('Iteration [{0} / {1}]'.format(t, T), pp)
