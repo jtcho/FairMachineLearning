@@ -26,7 +26,18 @@ def beta(k, d, c):
     return np.random.uniform(0, c+1, size=(k, d))
 
 
-def top_interval(X, Y, k, d, _delta, T):
+def print_progress(s, should_print):
+    """
+    Helper function to print the progress of an algorithm as it's running.
+
+    :param s: the string to print
+    :should_print: whether or not the string should be printed
+    """
+    if should_print:
+        print(s)
+
+
+def top_interval(X, Y, k, d, _delta, T, _print_progress=True):
     """
     Simulates T rounds of TopInterval for k.
 
@@ -37,15 +48,18 @@ def top_interval(X, Y, k, d, _delta, T):
     :param d: the number of features
     :param _delta: confidence parameter
     :param T: the number of iterations
+    :returns: cum_regret (the total regret across all runs of the algorithm),
+              final_regret (the regret in the last round of the algorithm)
     """
+    pp = _print_progress
     _eta = eta(T)  # exploration cutoff probabilities
     picks = []
     for t in range(T):
-        print('Iteration [{0} / {1}]'.format(t, T))
+        print_progress('Iteration [{0} / {1}]'.format(t, T), pp)
         if t <= d or np.random.rand() <= _eta[t]:
             # Play uniformly at random from [1, k].
             picks.append(np.random.randint(0, k))
-            print('Exploration round.')
+            print_progress('Exploration round.', pp)
         else:
             intervals = []
             for i in range(k):
@@ -55,7 +69,7 @@ def top_interval(X, Y, k, d, _delta, T):
                 try:
                     _XTX = inv(_XtiT.dot(_Xti))
                 except:
-                    print('Encountered singular matrix. Ignoring.')
+                    print_progress('Encountered singular matrix. Ignoring.', pp)
                     continue
                 _Yti = Y[:t+1, i]
                 Bh_t_i = _XTX.dot(_XtiT).dot(_Yti)  # Compute OLS estimators.
@@ -67,18 +81,22 @@ def top_interval(X, Y, k, d, _delta, T):
                 intervals.append([yh_t_i - w_t_i, yh_t_i + w_t_i])
             # Pick the agent with the largest upper bound.
             picks.append(np.argmax(np.array(intervals)[:, 1]) if intervals else np.random.randint(0, k))
-            print('Intervals: {0}'.format(intervals))
+            print_progress('Intervals: {0}'.format(intervals), pp)
     # Compute sum of best picks over each iteration.
     best = [Y[i].max() for i in range(2, T)]
     performance = [Y[t][picks[t-2]] for t in range(2, T)]
-    print('Cumulative Regret: {0}'.format(sum(best) - sum(performance)))
-    print('Final Regret: {0}'.format(best[-1] - performance[-1]))
+    cum_regret = sum(best) - sum(performance)
+    final_regret = best[-1] - performance[-1]
+    print_progress('Cumulative Regret: {0}'.format(cum_regret), pp)
+    print_progress('Final Regret: {0}'.format(final_regret), pp)
+    return cum_regret, final_regret
 
 
-def compute_chain(i_st, intervals, k):
+def compute_chain(i_st, intervals, k, _print_progress=True):
     # Sort intervals by decreasing order.
+    pp = _print_progress
     chain = [i_st]
-    print(intervals[:, 1])
+    print_progress(intervals[:, 1], pp)
     ordering = np.argsort(intervals[:, 1])[::-1]
     intervals = intervals[ordering, :]
 
@@ -92,21 +110,22 @@ def compute_chain(i_st, intervals, k):
     return chain
 
 
-def interval_chaining(c, k, d, _delta, T):
+def interval_chaining(c, k, d, _delta, T, _print_progress=True):
     """
     Simulates T rounds of interval chaining.
     """
+    pp = _print_progress
     X = np.random.uniform(0, 1, size=(k, T, d))  # 3-axis ndarray
     _eta = eta(T)  # exploration cutoff probabilities
     B = beta(k, d, c)  # true parameters. B[i]: params for arm i
     Y = np.array([X[i].dot(transpose(B[i])) for i in range(k)])  # not sure if there's a cleaner way to do this
     picks = []
     for t in range(T):
-        print('Iteration [{0} / {1}]'.format(t, T))
+        print_progress('Iteration [{0} / {1}]'.format(t, T), pp)
         if np.random.rand() <= _eta[t]:
             # Play uniformly at random from [1, k].
             picks.append(np.random.randint(0, k))
-            print('Exploration round.')
+            print_progress('Exploration round.', pp)
         else:
             intervals = []
             for i in range(k):
@@ -126,7 +145,7 @@ def interval_chaining(c, k, d, _delta, T):
                     )
                     intervals.append([yh_t_i - w_t_i, yh_t_i + w_t_i])
                 except:
-                    print('Encountered singular matrix. Defaulting to exploration round.')
+                    print_progress('Encountered singular matrix. Defaulting to exploration round.', pp)
                     intervals = None
                     break
             # Pick a random uniformly at random from the chain containing the highest quality individual.
@@ -134,13 +153,16 @@ def interval_chaining(c, k, d, _delta, T):
                 picks.append(np.random.randint(0, k))
             else:
                 i_st = np.argmax(np.array(intervals)[:, 1])
-                chain = compute_chain(i_st, np.array(intervals), k)
-                print('Computed chain: {0}'.format(chain))
+                chain = compute_chain(i_st, np.array(intervals), k, pp)
+                print_progress('Computed chain: {0}'.format(chain), pp)
                 picks.append(np.random.choice(chain))
-            print('Intervals: {0}'.format(intervals))
+            print_progress('Intervals: {0}'.format(intervals), pp)
     # Compute sum of best picks over each iteration.
     best = [transpose(Y)[i].max() for i in range(2, T)]
     performance = [Y[picks[t-2]][t] for t in range(2, T)]
-    print('Cumulative Regret: {0}'.format(sum(best) - sum(performance)))
-    print('Final Regret: {0}'.format(best[-1] - performance[-1]))
+    cum_regret = sum(best) - sum(performance)
+    final_regret = best[-1] - performance[-1]
+    print_progress('Cumulative Regret: {0}'.format(cum_regret), pp)
+    print_progress('Final Regret: {0}'.format(final_regret), pp)
+    return cum_regret, final_regret
 
