@@ -62,7 +62,7 @@ def main():
             cum_regret_ics = []
             avg_regret_ics = []
             final_regret_ics = []
-            for i in range(0, 50):  # 50 trials.
+            for i in range(0, 500):  # 500 trials.
                 X = np.random.uniform(0, 1, size=(T, k, d))
                 B = beta(k, d, c)
                 Y = np.array([np.diag(X[t].dot(np.transpose(B))) for t in range(T)])
@@ -104,7 +104,7 @@ def main():
         plt.legend(handles=[c1, c2, c5, c10])
         plt.xlabel('T (# of rounds)', fontsize=18)
         plt.ylabel(v['ylabel'], fontsize=15)
-        plt.savefig('figures_d/' + v['name'])
+        plt.savefig('figures_d_500x/' + v['name'])
 
 
 def mean(numbers):
