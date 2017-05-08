@@ -59,27 +59,21 @@
 \begin{document}
 \maketitle
 
-\begin{abstract}
+%\begin{abstract}
 
-\noindent TODO: Abstract 
+%\noindent TODO: Abstract 
 
-\end{abstract}
+%\end{abstract}
 
 \section{Introduction}
 
-For our CIS 625 final project, our team --- JT Cho, Karinna Loo, and Veronica Wharton --- took a closer look at the topic of fairness in machine learning. The paper that piqued our interest was \textit{Rawlsian Fairness for Machine learning} \cite{DBLP:journals/corr/JosephKMNR16}, which discusses the procedures of studying the quantifying the discriminatory behaviors in automated decision-making procedures and proposing algorithms that both learn at a rate comparable to (but necessarily worse than) the best algorithms absent of a fairness constraint and also satisfy a specified fairness constraint. Specifically, our team was interested in exploring the paper's results via implementation, as well as exploring what further applications for fairness analysis in real-world data might be possible. 
-
-\noindent TODO: Problem overview
-
-\noindent TODO: Potential applications
-
-\noindent TODO: Literature review, including overview of \newcite{DBLP:journals/corr/JosephKMNR16}
+For our CIS 625 final project, our team --- JT Cho, Karinna Loo, and Veronica Wharton --- took a closer look at the topic of fairness in machine learning. The paper that piqued our interest was \textit{Rawlsian Fairness for Machine learning} \cite{DBLP:journals/corr/JosephKMNR16}, which describes two online algorithms in the linear contextual bandit framework that both learn at a rate comparable to (but necessarily worse than) the best algorithms absent of a fairness constraint and also satisfy a specified fairness constraint. The authors present theoretical and empirical results. Our team sought to re-implement the algorithms presented by \newcite{DBLP:journals/corr/JosephKMNR16} and then expand upon their empirical analyses. We were also interested in exploring further fairness analyses using real-world data.
 
 \section{Project overview}
 
 Our project consisted of the following steps:
 
-\begin{enumerate}	\item We read the paper \textit{Rawlsian Fairness for Machine Learning}  \cite{DBLP:journals/corr/JosephKMNR16}.	\item We implemented the TopInterval, IntervalChaining, and RidgeFair algorithms from the paper in Python. 	\item We ran our implementations on a Yahoo! dataset containing a fraction of the user click log for news articles displayed in the Featured Tab of the Today Module on the Yahoo! Front Page during the first ten days in May 2009, to see how well they performed on real data.	\item To empirically evaluate our implementations, we ran experiments similar to those in \cite{DBLP:journals/corr/JosephKMNR16} with randomly-drawn contexts. 	\item We compiled our findings into a written report.
+\begin{enumerate}	\item We read the paper \textit{Rawlsian Fairness for Machine Learning}  \cite{DBLP:journals/corr/JosephKMNR16}.	\item We implemented the TopInterval, IntervalChaining, and RidgeFair algorithms from the paper in Python. 	\item We ran our implementations on a Yahoo! dataset containing a fraction of the user click log for news articles displayed in the Featured Tab of the Today Module on the Yahoo! Front Page during the first ten days in May 2009 \cite{yahoo}, to see how well they performed on real data.	\item To empirically evaluate our implementations, we ran experiments similar to those in \cite{DBLP:journals/corr/JosephKMNR16} with randomly-drawn contexts. 	\item We compiled our findings into a written report.
 \end{enumerate}
 
 \section{Implementation: IntervalChaining}
