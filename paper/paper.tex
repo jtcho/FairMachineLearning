@@ -88,7 +88,25 @@ The code for our implementations can be found here: \url{https://github.com/jtch
 
 \section{Experimental results: generated data}
 
-\noindent TODO: Pretty figures
+We ran experiments that compared the regret of \textsc{IntervalChaining} (IC) with the regret of \textsc{TopInterval} (TI). As in \newcite{DBLP:journals/corr/JosephKMNR16}, we present three sets of empirical results: 
+\begin{itemize}
+	\item Varying $T$ (the number of rounds) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $T$.
+	\item Varying $k$ (the number of arms/groups) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $k$.
+	\item Varying $d$ (the number of features) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $d$.
+\end{itemize} 
+
+For each increasing variable ($T$, $k$, or $d$), we present nine metrics as a function of the variable, each averaged over 500 trials. Contexts are drawn uniformly at random from $[0,1]^d$ and standard Gaussian noise. \newcite{DBLP:journals/corr/JosephKMNR16} only present the average regret difference (metric \#3).
+\begin{enumerate}
+	\item Average regret (TI) - the average regret of \textsc{TopInterval} across all rounds.
+	\item Average regret (IC) - the average regret of \textsc{IntervalChaining} across all rounds.
+	\item Average regret difference - the difference between the average regrets of \textsc{TopInterval} and \textsc{IntervalChaining} across all rounds.
+	\item Cumulative regret (TI) - the cumulative regret of \textsc{TopInterval} across all rounds.
+	\item Cumulative regret (IC) - the cumulative regret of \textsc{IntervalChaining} across all rounds.
+	\item Cumulative regret difference - the difference between the cumulative regrets of \textsc{TopInterval} and \textsc{IntervalChaining} across all rounds.
+	\item Final regret (TI) - the regret of \textsc{TopInterval} in the final round.
+	\item Final regret (IC) - the regret of \textsc{IntervalChaining} in the final round.
+	\item Final regret difference - the difference between the final regrets of \textsc{TopInterval} and \textsc{IntervalChaining}.
+\end{enumerate}
 
 \section{Experimental results: real data}
 
