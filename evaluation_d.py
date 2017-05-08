@@ -50,7 +50,7 @@ def main():
             'name': 'final_regret_diff'
         }
     }
-    for _, v in results.items():  # 9 sets of results.
+    for _, v in results.iteritems():  # 9 sets of results.
         for j in c_vals:
             v[str(j)] = []
 
@@ -94,7 +94,7 @@ def main():
             results['7'][str(c)].append(final_regret_ic)
             results['8'][str(c)].append(abs(final_regret_ti - final_regret_ic))
 
-    for k, v in results.items():
+    for k, v in results.iteritems():
         plt.clf()
         c1, = plt.plot(T_vals, results[k]['1.0'], label='c=1')
         c2, = plt.plot(T_vals, results[k]['2.0'], label='c=2')
