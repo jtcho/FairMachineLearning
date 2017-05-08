@@ -20,7 +20,7 @@ def main():
     # Plot: Varying T (# of rounds)
     d = 2
     k = 2
-    T_vals = range(3, 1000)
+    T_vals = range(3, 1000, 10)
 
     results = {
         '0': {
@@ -66,14 +66,33 @@ def main():
 
     for c in c_vals:
         for T in T_vals:
-            X = np.random.uniform(0, 1, size=(T, k, d))
-            B = beta(k, d, c)
-            Y = np.array([np.diag(X[t].dot(np.transpose(B))) for t in range(T)])
+            cum_regret_tis = []
+            avg_regret_tis = []
+            final_regret_tis = []
+            cum_regret_ics = []
+            avg_regret_ics = []
+            final_regret_ics = []
+            for i in range(0, 1000):  # 1000 trials
+                X = np.random.uniform(0, 1, size=(T, k, d))
+                B = beta(k, d, c)
+                Y = np.array([np.diag(X[t].dot(np.transpose(B))) for t in range(T)])
 
-            cum_regret_ti, avg_regret_ti, final_regret_ti = top_interval(
-                    X, Y, k, d, 0.05, T, _print_progress=False)
-            cum_regret_ic, avg_regret_ic, final_regret_ic = interval_chaining(
-                    X, Y, c, k, d, 0.05, T, _print_progress=False)
+                cum_regret_ti, avg_regret_ti, final_regret_ti = top_interval(
+                        X, Y, k, d, 0.05, T, _print_progress=False)
+                cum_regret_ic, avg_regret_ic, final_regret_ic = interval_chaining(
+                        X, Y, c, k, d, 0.05, T, _print_progress=False)
+                cum_regret_tis.append(cum_regret_ti)
+                avg_regret_tis.append(avg_regret_ti)
+                final_regret_tis.append(final_regret_ti)
+                cum_regret_ics.append(cum_regret_ic)
+                avg_regret_ics.append(avg_regret_ic)
+                final_regret_ics.append(final_regret_ic)
+            cum_regret_ti = mean(cum_regret_tis)
+            avg_regret_ti = mean(avg_regret_tis)
+            final_regret_ti = mean(avg_regret_tis)
+            cum_regret_ic = mean(cum_regret_ics)
+            avg_regret_ic = mean(avg_regret_ics)
+            final_regret_ics = mean(final_regret_ics)
 
             results['0'][str(c)].append(avg_regret_ti)
             results['1'][str(c)].append(avg_regret_ic)
@@ -110,6 +129,10 @@ def main():
     # T = 1000
     # for c in c_vals:
     #    for d in d_vals:
+
+
+def mean(numbers):
+    return float(sum(numbers)) / max(len(numbers), 1)
 
 
 if __name__ == '__main__':
