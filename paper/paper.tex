@@ -93,6 +93,8 @@ The implementation for \texttt{IntervalChaining} was simple given \texttt{TopInt
 
 \section{Implementation: RidgeFair}
 
+The \texttt{Ridge Fair algorithm} was also implemented as presented in (Joseph et al., 2016). This algorithm is very similar in implementation to Interval Chaining, save that it’s narrower confidence intervals allow for derivation of tighter regret bounds. Some details to note are that we assume for simplicity (and without loss of generality) that our parameter R = 1 and that we play uniformly randomly among all arms.
+
 \section{Yahoo! Dataset}
 
 To expand upon the initial work done by Joseph et. al, we endeavored to test the presented algorithms on a real dataset. A Yahoo! dataset containing logs of user-visits to the front page was procured to evaluate our contextual bandits algorithms. Each log entry details the following:
