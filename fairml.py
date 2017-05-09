@@ -1,5 +1,6 @@
+from math import sqrt
 import numpy as np
-from numpy import transpose
+from numpy import log, transpose
 from numpy.linalg import inv
 from scipy.stats import norm
 
@@ -179,3 +180,58 @@ def interval_chaining(X, Y, c, k, d, _delta, T, _print_progress=True):
     print_progress('Average Regret: {0}'.format(avg_regret), pp)
     print_progress('Final Regret: {0}'.format(final_regret), pp)
     return cum_regret, avg_regret, final_regret
+
+
+def ridge_fair(X, Y, k, d, _delta, T, _lambda, _print_progress=True):
+    """
+    Simulates T rounds of ridge_fair.
+
+    :param X: a 3-axis (T, k, d) ndarray of d-dimensional context vectors for
+              each time-step and arm
+    :param Y: a T x k ndarray of reward function output for each context vector
+    :param k: the number of arms
+    :param d: the number of features
+    :param _delta: confidence parameter
+    :param T: the number of iterations
+    :param _lambda: regularization paramameter
+    """
+    picks = []
+    for t in range(T):
+        for i in range(k):
+            R = 1
+            intervals = []
+            try:
+                X_i = X[:t, i]  # design matrix
+                Y_i = Y[:t, i]  # same with Y
+                x_ti = X[t, i]  # feature vector for arm i in round t
+
+                X_iT = transpose(X_i)
+                _idenD = np.identity(d)
+                V_it = X_iT.dot(X_i) + (_lambda * _idenD)
+
+                B_it = inv(V_it).dot(X_iT).dot(Y_i)
+
+                y_ti = transpose(x_ti).dot(B_it)
+
+                V_itI = inv(V_it)  # inverse of V_it
+                _wti1 = sqrt(transpose(x_ti).dot(V_itI).dot(x_ti))
+                _wti2 = R * sqrt(d * log((1 + (t / _lambda)) / _delta)) + sqrt(_lambda)
+                w_ti = _wti1 * _wti2
+
+                intervals.append([y_ti - w_ti, y_ti + w_ti])
+            except:
+                    print_progress('Error in assigning interval value.', _print_progress)
+                    intervals = None
+                    break
+            if not intervals:
+                picks.append(np.random.randint(0, k))
+            else:
+                i_st = np.argmax(np.array(intervals)[:, 1])
+                chain = compute_chain(i_st, np.array(intervals), k)
+                # play uniformly random from chain
+                picks.append(np.random.choice(chain))
+
+    best = [Y[i].max() for i in range(2, T)]
+    performance = [Y[t][picks[t - 2]] for t in range(2, T)]
+    print_progress('Cumulative Regret: {0}'.format(sum(best) - sum(performance)), _print_progress)
+    print_progress('Final Regret: {0}'.format(best[-1] - performance[-1]), _print_progress)
