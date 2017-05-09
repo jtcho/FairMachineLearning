@@ -102,9 +102,9 @@ def main():
         c10, = plt.plot(d_vals, results[k]['10.0'], label='c=10')
         plt.xticks(np.arange(min(d_vals), max(d_vals) + 1, 10))
         plt.legend(handles=[c1, c2, c5, c10])
-        plt.xlabel('T (# of rounds)', fontsize=18)
+        plt.xlabel('d (# of features)', fontsize=18)
         plt.ylabel(v['ylabel'], fontsize=15)
-        plt.savefig('figures_d_50x/' + v['name'])
+        plt.savefig('figures_d_50x/d_50x_' + v['name'])
 
 
 def mean(numbers):

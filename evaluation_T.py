@@ -104,7 +104,7 @@ def main():
         plt.legend(handles=[c1, c2, c5, c10])
         plt.xlabel('T (# of rounds)', fontsize=18)
         plt.ylabel(v['ylabel'], fontsize=15)
-        plt.savefig('figures_T_50x/' + v['name'])
+        plt.savefig('figures_T_50x/T_50x_' + v['name'])
 
 
 def mean(numbers):
