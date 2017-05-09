@@ -98,7 +98,7 @@ The implementation for \texttt{IntervalChaining} was simple given \texttt{TopInt
 
 \section{Implementation: RidgeFair}
 
-The \texttt{RidgeFair} algorithm was also implemented as presented in (Joseph et al., 2016). This algorithm is very similar in implementation to \texttt{IntervalChaining}, save that it’s narrower confidence intervals allow for derivation of tighter regret bounds. Some details to note are that we assume for simplicity (and without loss of generality) that our parameter $R = 1$ and that we play uniformly randomly among all arms.
+The \texttt{RidgeFair} algorithm was also implemented as presented in (Joseph et al., 2016). This algorithm is very similar in implementation to \texttt{IntervalChaining}, save that it’s narrower confidence intervals allow for derivation of tighter regret bounds. A couple small details to note are, first, that we assume for simplicity (and without loss of generality) that the noise is R sub-Gaussian with parameter R = 1 and second, that we play uniformly at random among all arms in the set of actions chained to the max.
 
 \section{Yahoo! Dataset}
 
