@@ -9,7 +9,7 @@ def main():
 
     # Plot: Varying k (# groups)
     d = 2
-    k_vals = range(1, 50)
+    k_vals = range(1, 50, 5)
     T = 1000
 
     results = {
@@ -50,7 +50,7 @@ def main():
             'name': 'final_regret_diff'
         }
     }
-    for _, v in results.iteritems():  # 9 sets of results.
+    for _, v in results.items():  # 9 sets of results.
         for j in c_vals:
             v[str(j)] = []
 
@@ -62,7 +62,7 @@ def main():
             cum_regret_ics = []
             avg_regret_ics = []
             final_regret_ics = []
-            for i in range(0, 500):  # 50 trials.
+            for i in range(0, 50):  # 50 trials.
                 X = np.random.uniform(0, 1, size=(T, k, d))
                 B = beta(k, d, c)
                 Y = np.array([np.diag(X[t].dot(np.transpose(B))) for t in range(T)])
@@ -94,7 +94,7 @@ def main():
             results['7'][str(c)].append(final_regret_ic)
             results['8'][str(c)].append(abs(final_regret_ti - final_regret_ic))
 
-    for k, v in results.iteritems():
+    for k, v in results.items():
         plt.clf()
         c1, = plt.plot(k_vals, results[k]['1.0'], label='c=1')
         c2, = plt.plot(k_vals, results[k]['2.0'], label='c=2')
@@ -104,7 +104,7 @@ def main():
         plt.legend(handles=[c1, c2, c5, c10])
         plt.xlabel('T (# of rounds)', fontsize=18)
         plt.ylabel(v['ylabel'], fontsize=15)
-        plt.savefig('figures_k_500x/' + v['name'])
+        plt.savefig('figures_k_50x/' + v['name'])
 
 
 def mean(numbers):
