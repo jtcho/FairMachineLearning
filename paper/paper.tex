@@ -98,7 +98,7 @@ The implementation for \texttt{IntervalChaining} was simple given \texttt{TopInt
 
 \section{Implementation: RidgeFair}
 
-The \texttt{RidgeFair} algorithm was also implemented as presented in (Joseph et al., 2016). This algorithm is very similar in implementation to \texttt{IntervalChaining}, save that it’s narrower confidence intervals allow for derivation of tighter regret bounds. A couple small details to note are, first, that we assume for simplicity (and without loss of generality) that the noise is R sub-Gaussian with parameter R = 1 and second, that we play uniformly at random among all arms in the set of actions chained to the max.
+The \texttt{RidgeFair} algorithm was also implemented as presented in \newcite{DBLP:journals/corr/JosephKMNR16}. This algorithm is very similar in implementation to \texttt{IntervalChaining}, save that it’s narrower confidence intervals allow for derivation of tighter regret bounds. A couple small details to note are, first, that we assume for simplicity (and without loss of generality) that the noise is $R$ sub-Gaussian with parameter $R = 1$ and second, that we play uniformly at random among all arms in the set of actions chained to the max.
 
 \section{Yahoo! Dataset}
 
@@ -140,12 +140,12 @@ where $\Phi(x) = \frac{e^{x}}{1 + e^{x}} = \text{logistic}(x)$. It suffices to n
 
 We ran experiments that compared the regret of \textsc{IntervalChaining} (IC) with the regret of \textsc{TopInterval} (TI). As in \newcite{DBLP:journals/corr/JosephKMNR16}, we present three sets of empirical results: 
 \begin{itemize}
-	\item Varying $T$ (the number of rounds) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $T$.
-	\item Varying $k$ (the number of arms/groups) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $k$.
-	\item Varying $d$ (the number of features) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $d$.
+	\item Varying $T$ (the number of rounds) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $T$. (Figure \ref{fig:free_T})
+	\item Varying $k$ (the number of arms/groups) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $k$. (Figure \ref{fig:free_k})
+	\item Varying $d$ (the number of features) - we measured the average regret of \textsc{IntervalChaining} and \textsc{TopInterval} as a function of increasing $d$. (Figure \ref{fig:free_d})
 \end{itemize} 
 
-For each increasing variable ($T$, $k$, or $d$), we present nine metrics as a function of the variable, each averaged over 500 trials. Contexts are drawn uniformly at random from $[0,1]^d$ and standard Gaussian noise. \newcite{DBLP:journals/corr/JosephKMNR16} only present the average regret difference (metric \#3).
+For each increasing variable ($T$, $k$, or $d$), we present nine metrics as a function of the variable, each averaged over 50 trials. Contexts are drawn uniformly at random from $[0,1]^d$ and standard Gaussian noise. \newcite{DBLP:journals/corr/JosephKMNR16} only present the average regret difference (metric \#3).
 \begin{enumerate}
 	\item Average regret (TI) - the average regret of \textsc{TopInterval} across all rounds.
 	\item Average regret (IC) - the average regret of \textsc{IntervalChaining} across all rounds.
@@ -157,6 +157,111 @@ For each increasing variable ($T$, $k$, or $d$), we present nine metrics as a fu
 	\item Final regret (IC) - the regret of \textsc{IntervalChaining} in the final round.
 	\item Final regret difference (TI vs. IC) - the difference between the final regrets of \textsc{TopInterval} and \textsc{IntervalChaining}.
 \end{enumerate}
+
+\begin{figure*}[ht!]
+	\centering
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_avg_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_avg_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_avg_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_cum_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_cum_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_cum_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_final_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_final_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{T_50x_final_regret_diff}
+	}
+	\caption{$d=2$, $k=2$, free $T$}
+	\label{fig:free_T}
+\end{figure*}
+
+\begin{figure*}[ht!]
+	\centering
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_avg_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_avg_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_avg_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_cum_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_cum_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_cum_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_final_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_final_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{k_50x_final_regret_diff}
+	}
+	\caption{$d=2$, $T=1000$, free $k$}
+	\label{fig:free_k}
+\end{figure*}
+
+\begin{figure*}[ht!]
+	\centering
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_avg_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_avg_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_avg_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_cum_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_cum_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_cum_regret_diff}
+	}
+	\\
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_final_regret_ti}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_final_regret_ic}
+	}
+	\subfloat{ %
+		\includegraphics[width=0.33\textwidth, height=0.33\textheight, keepaspectratio]{d_50x_final_regret_diff}
+	}
+	\caption{$k=2$, $T=1000$, free $d$}
+	\label{fig:free_d}
+\end{figure*}
 
 \section{Conclusion}
 
