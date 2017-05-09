@@ -117,7 +117,17 @@ To mitigate the first issue, we elected to alter our sampling procedure to separ
 
 To resolve the second issue, we made a simplification to the problem context by clustering the articles. Across the million and a half logged events, there are approximately $20$ distinct articles in the article pools. In choosing a smaller number of clusters, we altered the scenario such that a successful event would be if the user clicked an article that was from the same pool chosen by the algorithm. In grouping the articles together, we reduced the number of available arms and also developed the notion of `groups' implicit in Joseph et. al.'s contextual bandits framework. The emergent notion of fairness then lies in discrimination against any particular cluster of articles.
 
-These modifications resulted in significant improvements in the performance of our implementations on the Yahoo! dataset.
+These modifications resulted in significant improvements in the performance of our implementations on the Yahoo! dataset, as shown in Figure ~\ref{fig:yahoo} below.
+
+Another novel modification we made was the use of a logit model instead of the simple linear regression used in \newcite{DBLP:journals/corr/JosephKMNR16}. We preserve the original fairness argument of the \texttt{IntervalChaining} algorithm by simply rescaling the output of the OLS estimator and the confidence intervals to $[0, 1]$ via the inverse logit. That is,
+$$w_{t,i} = \mathcal{Q}_{\mathcal{F}_{t,i}}(\frac{\delta}{2kT})$$
+$$[\ell_{i}^{t}, u_{i}^{t}] = [\Phi(\hat{y}_{t,i} - w_{t,i}), \Phi(\hat{y}_{t,i} + w_{t,i})]$$
+where $\Phi(x) = \frac{e^{x}}{1 + e^{x}} = \text{logistic}(x)$. It suffices to note that both OLS and logistic regression are variations of the generalized linear model (GLM).
+
+\begin{figure*}
+\includegraphics[width=\textwidth]{yahoo-interval-chaining.png}
+\caption{\emph{Performance metrics of the logistic-regression based interval-chaining algorithm with $3$ clusters over 10,000 iterations. Shown on the left is a graph depicting the performance of the learning algorithm vs that of the `best' player, whose picked article is clicked by the user in every round. The regret is simply the difference in the cumulative number of successes between the two. In practice, this is an unfair comparison to make, as it is unreasonable to expect that the user would click the featured article every visit - and our results stand even stronger in comparison. On the right is a graph denoting the cumulative fraction of successful picks by the algorithm vs. the baseline (randomly selecting one out of the three pools at each step).} \label{fig:yahoo}}
+\end{figure*}
 
 \section{Experimental results}
 
