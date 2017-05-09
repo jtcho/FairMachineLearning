@@ -23,6 +23,7 @@
 \usepackage{hyperref}
 \usepackage{tikz}
 \usepackage{amsmath}
+\usepackage{tabulary}
 
 \usepackage[labelsep=quad,indention=10pt]{subfig}
 \captionsetup*[subfigure]{position=bottom}
@@ -84,7 +85,7 @@ All algorithms and code were written using Python 3, along with numpy, SciPy, an
 
 \section{Implementation: TopInterval}
 
-The \texttt{TopInterval} learning algorithm was implemented true to form as presented in \cite{DBLP:journals/corr/JosephKMNR16}. Particular details of note - to ensure that all matrices used in computation were nonsingular, the first $d$ rounds are always chosen to be exploration rounds, where $d$ is the number of features.
+The \texttt{TopInterval} learning algorithm was implemented true to form as presented in \cite{DBLP:journals/corr/JosephKMNR16}. Particular details of note - to ensure that all matrices used in computation were nonsingular, the first $d$ rounds are always chosen to be exploration rounds, where $d$ is the number of features. Additionally, we found it necessary to pick each arm once in order to observe data for each.
 
 \section{Implementation: IntervalChaining}
 
@@ -93,6 +94,30 @@ The implementation for \texttt{IntervalChaining} was simple given \texttt{TopInt
 \section{Implementation: RidgeFair}
 
 \section{Yahoo! Dataset}
+
+To expand upon the initial work done by Joseph et. al, we endeavored to test the presented algorithms on a real dataset. A Yahoo! dataset containing logs of user-visits to the front page was procured to evaluate our contextual bandits algorithms. Each log entry details the following:
+
+\begin{center}
+\begin{table}[h]
+\fontsize{6}{10}\selectfont
+\begin{tabulary}{0.8\textwidth}{|l|l|l|l|l|}
+\hline \textbf{unix\_timestamp} & \textbf{displayed\_id} & \textbf{user\_clicked} & \textbf{user\_features} & \textbf{article\_pool}\\\hline
+1241162400&109513&0&$\dots$&[$\dots$]\\\hline
+\end{tabulary}
+\end{table}
+\end{center}
+
+In each event, a user specified by $6$ features is presented an article from a pool of around $20$ distinct articles, each of which has their own $6$-dimensional feature vector. The event also tracks whether the user clicked the featured article or not.
+
+In a fashion similar to that presented in \cite{DBLP:journals/corr/abs-1003-5956}, we devised an evaluation scheme for the various learning algorithms. In our procedure, a random sample is drawn from the set of logged events. The learning algorithm scans through the sampled events linearly, evaluating its predictions for each one. If there happens to be a match between the algorithm's picked arm and the article displayed in the event, the logged event is added to the history.
+
+Initial attempts to use this approach failed for a couple of reasons. First, the Yahoo! dataset contains a highly disproportionate number of negative samples with respect to positive ones. Therefore, our learning algorithm would not retain useful information over a number of iterations due to only being trained on negative samples. Second, a direct application of the \texttt{TopInterval} and \texttt{IntervalChaining} algorithms relies on the assumption of $20$ distinct underlying groups from which the articles were chosen to be in the article pool, each with their own distinct quality function. This assumption was found to be unreasonable, as we found that an article's index in the article pool had no bearing on its actual likelihood of being clicked by the user when picked. The initial context also does not work well with a fairness analysis. As a consequence, we saw that direct applications of the learning algorithms saw very poor performance.
+
+To mitigate the first issue, we elected to alter our sampling procedure to separately sample positive and negative samples, and then shuffle them together. A brief argument towards the validity of this approach follows. While the underlying distribution of observed user visits saw mostly negative results, the algorithms performance should be independent of whatever underlying distribution there is - taking into account exclusively the user's features and the articles it is choosing from. Hence, curating the input to the learning algorithm such that it learns equally from both the positive and negative events suffices.
+
+To resolve the second issue, we made a simplification to the problem context by clustering the articles. Across the million and a half logged events, there are approximately $20$ distinct articles in the article pools. In choosing a smaller number of clusters, we altered the scenario such that a successful event would be if the user clicked an article that was from the same pool chosen by the algorithm. In grouping the articles together, we reduced the number of available arms and also developed the notion of `groups' implicit in Joseph et. al.'s contextual bandits framework. The emergent notion of fairness then lies in discrimination against any particular cluster of articles.
+
+These modifications resulted in significant improvements in the performance of our implementations on the Yahoo! dataset.
 
 \section{Experimental results}
 
